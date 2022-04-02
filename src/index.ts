@@ -14,6 +14,7 @@ let bloggers: BloggerType[] = [
     { id: 3, youtubeUrl: 'Omagad.ru', name: "Omagad" },
     { id: 4, youtubeUrl: 'BeautyBlogger.ru', name: "BeautyBlogger" },
 ]
+
 let posts: PostType[] = [
     { id: 1, bloggerId: 1, bloggerName: 'Blogger1', content: 'Content1', shortDescription: 'shortDescription1', title: 'Info1' },
     { id: 2, bloggerId: 2, bloggerName: 'Blogger2', content: 'Content2', shortDescription: 'shortDescription2', title: 'Info2' },
@@ -194,6 +195,8 @@ app.delete('/posts/:postId', (req: Request, res: Response) => {
     res.send(204)
 
 })
+
+
 
 app.listen(PORT, () => {
     console.log(`Example app listening on port ${PORT}`)
