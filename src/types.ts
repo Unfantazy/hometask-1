@@ -12,3 +12,8 @@ type PostType = {
     bloggerId: number
     bloggerName?: string
 }
+
+type ErrorType = {
+    field: string
+    message: string
+}

@@ -32,17 +32,26 @@ app.get('/bloggers', (req: Request, res: Response) => {
 //Добавление нового блоггера
 app.post('/bloggers', (req: Request, res: Response) => {
 
+    const errorsMessages: ErrorType[] = []
     const { name, youtubeUrl } = req.body
+
+    if (!youtubeUrl) {
+        errorsMessages.push({ field: "youtubeUrl", message: "The YoutubeUrl field is required." })
+    }
+
+    if (!name) {
+        errorsMessages.push({ field: "name", message: "The Name field is required." })
+    }
+
+    if (errorsMessages.length) {
+        res.status(400).send(errorsMessages)
+        return
+    }
 
     const newBlogger: BloggerType = {
         id: +(new Date()),
         name,
         youtubeUrl
-    }
-
-    if (!youtubeUrl || !name) {
-        res.send(400)
-        return
     }
 
     bloggers.push(newBlogger)
