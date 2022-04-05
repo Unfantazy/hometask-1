@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express'
 import cors from 'cors'
 import bodyParser from "body-parser"
 import { posts } from "./repositories/db";
-import { bloggersRepositories } from "./repositories/bloggers-repositories";
+import {bloggersRouter} from "./routes/bloggers-routes";
 
 const app = express()
 app.use(cors())
@@ -10,95 +10,11 @@ app.use(bodyParser.json())
 
 const PORT = process.env.PORT || 5000
 
-
-
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello, World!')
 })
 
-//Получение всех блоггеров
-app.get('/bloggers', (req: Request, res: Response) => {
-    res.send(bloggersRepositories.getBloggers())
-})
-//Добавление нового блоггера
-app.post('/bloggers', (req: Request, res: Response) => {
-
-    const errorsMessages: ErrorType[] = []
-    const { name, youtubeUrl } = req.body
-
-    if (!youtubeUrl) {
-        errorsMessages.push({ field: "youtubeUrl", message: "The YoutubeUrl field is required." })
-    }
-
-    if (!name) {
-        errorsMessages.push({ field: "name", message: "The Name field is required." })
-    }
-
-    if (errorsMessages.length) {
-        res.status(400).send(errorsMessages)
-        return
-    }
-
-    const blogger = bloggersRepositories.createBlogger(name, youtubeUrl)
-
-    res.send(blogger)
-})
-//Найти блоггера по ID
-app.get('/bloggers/:bloggerId', (req: Request, res: Response) => {
-    const id = +req.params.bloggerId
-
-    const blogger = bloggersRepositories.getBloggerById(id)
-
-    if (!id) {
-        res.send(400)
-        return
-    }
-
-    if (!blogger) {
-        res.send(404)
-        return
-    }
-
-    res.send(blogger)
-})
-//Изменить информацию о блоггере
-app.put('/bloggers/:bloggerId', (req: Request, res: Response) => {
-    const id = +req.params.bloggerId
-    const { name, youtubeUrl } = req.body
-    const isUpdated = bloggersRepositories.updateVideo(id, name, youtubeUrl)
-
-    if (!id) {
-        res.send(400)
-        return
-    }
-
-    if (!isUpdated) {
-        res.send(404)
-        return
-    }
-
-    res.send(204)
-})
-//Удаление блоггера
-app.delete('/bloggers/:bloggerId', (req: Request, res: Response) => {
-    const id = +req.params.bloggerId
-
-    const isDeleted = bloggersRepositories.deleteVideo(id)
-
-    if (!id) {
-        res.send(400)
-        return
-    }
-
-    if (!isDeleted) {
-        res.send(404)
-        return
-    }
-
-    res.send(204)
-
-})
-
+app.use('/bloggers', bloggersRouter)
 
 //Получение всех постов
 app.get('/posts', (req: Request, res: Response) => {
@@ -186,7 +102,6 @@ app.delete('/posts/:postId', (req: Request, res: Response) => {
     res.send(204)
 
 })
-
 
 
 app.listen(PORT, () => {
