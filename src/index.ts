@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 import bodyParser from "body-parser"
+import { posts } from "./repositories/db";
+import { bloggersRepositories } from "./repositories/bloggers-repositories";
 
 const app = express()
 app.use(cors())
@@ -8,18 +10,7 @@ app.use(bodyParser.json())
 
 const PORT = process.env.PORT || 5000
 
-let bloggers: BloggerType[] = [
-    { id: 1, youtubeUrl: 'IT-KAMASUTRA.com', name: "Dimych" },
-    { id: 2, youtubeUrl: 'Incubator.ru', name: "Incubator" },
-    { id: 3, youtubeUrl: 'Omagad.ru', name: "Omagad" },
-    { id: 4, youtubeUrl: 'BeautyBlogger.ru', name: "BeautyBlogger" },
-]
 
-let posts: PostType[] = [
-    { id: 1, bloggerId: 1, bloggerName: 'Blogger1', content: 'Content1', shortDescription: 'shortDescription1', title: 'Info1' },
-    { id: 2, bloggerId: 2, bloggerName: 'Blogger2', content: 'Content2', shortDescription: 'shortDescription2', title: 'Info2' },
-    { id: 3, bloggerId: 2, bloggerName: 'Blogger3', content: 'Content3', shortDescription: 'shortDescription3', title: 'Info3' },
-]
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello, World!')
@@ -27,7 +18,7 @@ app.get('/', (req: Request, res: Response) => {
 
 //Получение всех блоггеров
 app.get('/bloggers', (req: Request, res: Response) => {
-    res.send(bloggers)
+    res.send(bloggersRepositories.getBloggers())
 })
 //Добавление нового блоггера
 app.post('/bloggers', (req: Request, res: Response) => {
@@ -48,20 +39,15 @@ app.post('/bloggers', (req: Request, res: Response) => {
         return
     }
 
-    const newBlogger: BloggerType = {
-        id: +(new Date()),
-        name,
-        youtubeUrl
-    }
+    const blogger = bloggersRepositories.createBlogger(name, youtubeUrl)
 
-    bloggers.push(newBlogger)
-    res.send(bloggers)
+    res.send(blogger)
 })
 //Найти блоггера по ID
 app.get('/bloggers/:bloggerId', (req: Request, res: Response) => {
     const id = +req.params.bloggerId
 
-    const blogger = bloggers.find(blogger => blogger.id === id) ?? null
+    const blogger = bloggersRepositories.getBloggerById(id)
 
     if (!id) {
         res.send(400)
@@ -79,21 +65,17 @@ app.get('/bloggers/:bloggerId', (req: Request, res: Response) => {
 app.put('/bloggers/:bloggerId', (req: Request, res: Response) => {
     const id = +req.params.bloggerId
     const { name, youtubeUrl } = req.body
-
-    const blogger = bloggers.find(blogger => blogger.id === id)
+    const isUpdated = bloggersRepositories.updateVideo(id, name, youtubeUrl)
 
     if (!id) {
         res.send(400)
         return
     }
 
-    if (!blogger) {
+    if (!isUpdated) {
         res.send(404)
         return
     }
-
-    blogger.name = name
-    blogger.youtubeUrl = youtubeUrl
 
     res.send(204)
 })
@@ -101,19 +83,18 @@ app.put('/bloggers/:bloggerId', (req: Request, res: Response) => {
 app.delete('/bloggers/:bloggerId', (req: Request, res: Response) => {
     const id = +req.params.bloggerId
 
+    const isDeleted = bloggersRepositories.deleteVideo(id)
+
     if (!id) {
         res.send(400)
         return
     }
 
-    const newBloggers = bloggers.filter(blogger => blogger.id !== id)
-
-    if (newBloggers.length >= bloggers.length) {
+    if (!isDeleted) {
         res.send(404)
         return
     }
 
-    bloggers = newBloggers
     res.send(204)
 
 })
@@ -200,6 +181,7 @@ app.delete('/posts/:postId', (req: Request, res: Response) => {
         res.send(404)
     }
 
+    // @ts-ignore
     posts = newPosts
     res.send(204)
 
