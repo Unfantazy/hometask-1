@@ -9,7 +9,7 @@ export const bloggersRepositories = {
     },
     deleteVideo(id: number) {
         const newBloggers = bloggers.filter(blogger => blogger.id !== id)
-        if(newBloggers.length < bloggers.length) {
+        if (newBloggers.length < bloggers.length) {
             // @ts-ignore
             bloggers = newBloggers
             return true

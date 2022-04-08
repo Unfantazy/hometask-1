@@ -5,7 +5,7 @@ type BloggerType = {
 }
 
 type PostType = {
-    id: number
+    id?: number
     title:string
     shortDescription: string
     content: string
