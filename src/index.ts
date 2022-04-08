@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 import bodyParser from "body-parser"
-import {bloggersRouter} from "./routes/bloggers-routes";
-import {postsRouter} from "./routes/posts-router";
+import { bloggersRouter } from "./routes/bloggers-routes";
+import { postsRouter } from "./routes/posts-router";
 
 const app = express()
 app.use(cors())
