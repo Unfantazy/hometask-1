@@ -29,7 +29,7 @@ bloggersRouter
 
     const blogger = bloggersRepositories.createBlogger(name, youtubeUrl)
 
-    res.send(blogger)
+    res.status(201).send(blogger)
 })
 //Найти блоггера по ID
 .get('/:bloggerId', (req: Request, res: Response) => {

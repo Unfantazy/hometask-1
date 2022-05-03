@@ -24,7 +24,7 @@ postsRouter
         return
     }
 
-    res.send(newPost)
+    res.status(201).send(newPost)
 })
 //Найти пост по ID
 .get('/:postId', (req: Request, res: Response) => {
