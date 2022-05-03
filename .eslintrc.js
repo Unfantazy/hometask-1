@@ -17,7 +17,7 @@ module.exports = {
     "rules": {
         "no-console": 2,
         "semi": ["error", "never"],
-        "quotes": ["error", "double"],
+        "quotes": ["error", "single"],
         "max-lines": ["error", { "max": 200, "skipBlankLines": true, "skipComments": true }],
         "no-var": "error",
         "indent": "error",
