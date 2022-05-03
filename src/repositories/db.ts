@@ -1,8 +1,8 @@
 export let bloggers: BloggerType[] = [
-    { id: 1, youtubeUrl: 'IT-KAMASUTRA.com', name: "Dimych" },
-    { id: 2, youtubeUrl: 'Incubator.ru', name: "Incubator" },
-    { id: 3, youtubeUrl: 'Omagad.ru', name: "Omagad" },
-    { id: 4, youtubeUrl: 'BeautyBlogger.ru', name: "BeautyBlogger" },
+    { id: 1, youtubeUrl: 'IT-KAMASUTRA.com', name: 'Dimych' },
+    { id: 2, youtubeUrl: 'Incubator.ru', name: 'Incubator' },
+    { id: 3, youtubeUrl: 'Omagad.ru', name: 'Omagad' },
+    { id: 4, youtubeUrl: 'BeautyBlogger.ru', name: 'BeautyBlogger' },
 ]
 
 export let posts: PostType[] = [

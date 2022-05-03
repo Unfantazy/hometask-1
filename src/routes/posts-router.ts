@@ -12,14 +12,19 @@ postsRouter
     .post('/', (req: Request, res: Response) => {
         const { title, shortDescription, content, bloggerId } = req.body
 
+        if (!bloggerId) {
+            res.send(400)
+            return
+        }
+
         const newPost = PostsRepositories.createPost({
             title,
             shortDescription,
             content,
             bloggerId,
         })
-
-        if (!bloggerId) {
+        
+        if (!newPost) {
             res.send(400)
             return
         }
@@ -42,7 +47,7 @@ postsRouter
             return
         }
 
-        res.send(post)
+        res.status(200).send(post)
     })
 //Изменить информацию в посте
     .put('/:postId', (req: Request, res: Response) => {
