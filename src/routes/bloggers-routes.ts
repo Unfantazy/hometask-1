@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express"
 import { bloggersRepositories } from "../repositories/bloggers-repositories"
-import { body, validationResult } from "express-validator"
+import { body } from "express-validator"
 import { inputValidatorMiddleware } from "../middlewares/input-validator-middleware"
 
 export const bloggersRouter = Router({})
@@ -19,13 +19,6 @@ bloggersRouter
         inputValidatorMiddleware,
 
         (req: Request, res: Response) => {
-
-            const errors = validationResult(req)
-            
-            if (!errors.isEmpty()) {
-                return res.status(400).json({ errors: errors.array(), resultCode: 1 })
-            }
-            
             const { name, youtubeUrl } = req.body
 
             const blogger = bloggersRepositories.createBlogger(name, youtubeUrl)

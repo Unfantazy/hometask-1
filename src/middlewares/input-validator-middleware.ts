@@ -9,7 +9,8 @@ export const inputValidatorMiddleware = (req: Request, res: Response, next: Next
             errorMessages: errors.array().map(error => ({
                 message: error.msg,
                 field: error.param
-            }))
+            })),
+            resultCode: 1
         })
     }
 
