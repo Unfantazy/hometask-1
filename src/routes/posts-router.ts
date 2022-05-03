@@ -1,5 +1,7 @@
 import { Request, Response, Router } from 'express'
 import { PostsRepositories } from '../repositories/posts-repositories'
+import { inputValidatorMiddleware } from '../middlewares/input-validator-middleware'
+import { body } from 'express-validator'
 
 export const postsRouter = Router({})
 
@@ -9,38 +11,40 @@ postsRouter
         res.send(PostsRepositories.getPosts())
     })
 //Добавление нового поста
-    .post('/', (req: Request, res: Response) => {
-        const { title, shortDescription, content, bloggerId } = req.body
+    .post('/',
+        body('title').isLength({ min: 1, max: 30 }).withMessage('The title field is required'),
+        body('shortDescription').isLength({ min: 1, max: 100 }).withMessage('The shortDescription field is required'),
+        body('content').isLength({ min: 1, max: 1000 }).withMessage('The content field is required'),
+        body('bloggerId').isLength({ min: 1 }).withMessage('The bloggerId is required').isNumeric(),
+        inputValidatorMiddleware,
 
-        if (!bloggerId) {
-            res.send(400)
-            return
-        }
+        (req: Request, res: Response) => {
+            const { title, shortDescription, content, bloggerId } = req.body
 
-        const newPost = PostsRepositories.createPost({
-            title,
-            shortDescription,
-            content,
-            bloggerId,
-        })
+            if (!bloggerId) {
+                res.send(400)
+                return
+            }
+
+            const newPost = PostsRepositories.createPost({
+                title,
+                shortDescription,
+                content,
+                bloggerId,
+            })
         
-        if (!newPost) {
-            res.send(400)
-            return
-        }
+            if (!newPost) {
+                res.send(400)
+                return
+            }
 
-        res.status(201).send(newPost)
-    })
+            res.status(201).send(newPost)
+        })
 //Найти пост по ID
     .get('/:postId', (req: Request, res: Response) => {
         const id = +req.params.postId
 
         const post = PostsRepositories.getPostById(id)
-
-        if (!id) {
-            res.send(400)
-            return
-        }
 
         if (!post) {
             res.send(404)
@@ -50,30 +54,32 @@ postsRouter
         res.status(200).send(post)
     })
 //Изменить информацию в посте
-    .put('/:postId', (req: Request, res: Response) => {
-        const id = +req.params.postId
-        const { title, shortDescription, content, bloggerId } = req.body
+    .put('/:postId',
+        body('title').isLength({ min: 1, max: 30 }).withMessage('The title field is required'),
+        body('shortDescription').isLength({ min: 1, max: 100 }).withMessage('The shortDescription field is required'),
+        body('content').isLength({ min: 1, max: 1000 }).withMessage('The content field is required'),
+        body('bloggerId').isLength({ min: 1 }).withMessage('The bloggerId is required').isNumeric(),
+        inputValidatorMiddleware,
+        
+        (req: Request, res: Response) => {
+            const id = +req.params.postId
+            const { title, shortDescription, content, bloggerId } = req.body
 
-        const isUpdated = PostsRepositories.updatePost({
-            id,
-            title,
-            shortDescription,
-            content,
-            bloggerId
+            const isUpdated = PostsRepositories.updatePost({
+                id,
+                title,
+                shortDescription,
+                content,
+                bloggerId
+            })
+
+            if (!isUpdated) {
+                res.send(404)
+                return
+            }
+
+            res.send(204)
         })
-
-        if (!id || !bloggerId) {
-            res.send(400)
-            return
-        }
-
-        if (!isUpdated) {
-            res.send(404)
-            return
-        }
-
-        res.send(204)
-    })
 //Удаление блоггера
     .delete('/:postId', (req: Request, res: Response) => {
         const id = +req.params.postId
