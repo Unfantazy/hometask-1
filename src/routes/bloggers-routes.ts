@@ -15,7 +15,7 @@ bloggersRouter
     .post('/',
 
         body('name').isLength({ min: 1, max: 15 }).withMessage('The Name field is required'),
-        body('youtubeUrl').isLength({ min: 1, max: 100 }).isURL().withMessage('invalid-url'),
+        body('youtubeUrl').isLength({ min: 1, max: 100 }).withMessage('The YoutubeUrl field is required.').isURL(),
         inputValidatorMiddleware,
 
         (req: Request, res: Response) => {
@@ -47,18 +47,13 @@ bloggersRouter
     .put('/:bloggerId',
 
         body('name').isLength({ min: 1, max: 15 }).withMessage('The Name field is required'),
-        body('youtubeUrl').isLength({ min: 1, max: 100 }).isURL().withMessage('invalid-url'),
+        body('youtubeUrl').isLength({ min: 1, max: 100 }).isURL().withMessage('The YoutubeUrl field is required.'),
         inputValidatorMiddleware,
 
         (req: Request, res: Response) => {
             const id = +req.params.bloggerId
             const { name, youtubeUrl } = req.body
             const isUpdated = bloggersRepositories.updateVideo(id, name, youtubeUrl)
-
-            if (!id) {
-                res.send(400)
-                return
-            }
 
             if (!isUpdated) {
                 res.send(404)

@@ -1,4 +1,4 @@
-import { bloggers } from "./db";
+import { bloggers } from './db'
 
 export const bloggersRepositories = {
     getBloggers() {
@@ -10,6 +10,7 @@ export const bloggersRepositories = {
     deleteVideo(id: number) {
         const newBloggers = bloggers.filter(blogger => blogger.id !== id)
         if (newBloggers.length < bloggers.length) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             bloggers = newBloggers
             return true
