@@ -24,7 +24,7 @@ module.exports = {
         "no-multi-spaces": "error",
         "space-in-parens": "error",
         "no-multiple-empty-lines": "error",
-        "prefer-const": "error",
+        "prefer-const": "warning",
         "no-use-before-define": "error",
         "object-curly-spacing": ["error", "always"]
     },
