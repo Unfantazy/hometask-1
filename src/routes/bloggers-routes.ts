@@ -14,8 +14,8 @@ bloggersRouter
 //Добавление нового блоггера
     .post('/',
 
-        body('name').isLength({ min: 1, max: 15 }),
-        body('youtubeUrl').isLength({ min: 1, max: 100 }).matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+$/),
+        body('name').trim().isLength({ min: 1, max: 15 }),
+        body('youtubeUrl').trim().isLength({ min: 1, max: 100 }).matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+$/),
         inputValidatorMiddleware,
 
         (req: Request, res: Response) => {
@@ -46,8 +46,8 @@ bloggersRouter
 //Изменить информацию о блоггере
     .put('/:bloggerId',
 
-        body('name').isLength({ min: 1, max: 15 }),
-        body('youtubeUrl').isLength({ min: 1, max: 100 }).matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+$/),
+        body('name').trim().isLength({ min: 1, max: 15 }),
+        body('youtubeUrl').trim().isLength({ min: 1, max: 100 }).matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+$/),
         inputValidatorMiddleware,
 
         (req: Request, res: Response) => {
