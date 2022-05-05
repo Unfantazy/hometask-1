@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express'
 import { bloggersRepositories } from '../repositories/bloggers-repositories'
 import { body } from 'express-validator'
 import { inputValidatorMiddleware } from '../middlewares/input-validator-middleware'
+import { authMiddleware } from '../middlewares/auth-middleware'
 
 export const bloggersRouter = Router({})
 
@@ -46,6 +47,7 @@ bloggersRouter
 //Изменить информацию о блоггере
     .put('/:bloggerId',
 
+        authMiddleware,
         body('name').trim().isLength({ min: 1, max: 15 }),
         body('youtubeUrl').trim().isLength({ min: 1, max: 100 }).matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+$/),
         inputValidatorMiddleware,
