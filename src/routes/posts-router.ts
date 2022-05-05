@@ -14,6 +14,7 @@ postsRouter
     })
 //Добавление нового поста
     .post('/',
+        authMiddleware,
         body('title').trim().isLength({ min: 1, max: 30 }),
         body('shortDescription').trim().isLength({ min: 1, max: 100 }),
         body('content').trim().isLength({ min: 1, max: 1000 }),
@@ -86,18 +87,21 @@ postsRouter
             res.send(204)
         })
 //Удаление блоггера
-    .delete('/:postId', (req: Request, res: Response) => {
-        const id = +req.params.postId
+    .delete('/:postId',
+        authMiddleware,
+        
+        (req: Request, res: Response) => {
+            const id = +req.params.postId
 
-        if (!id) {
-            res.send(400)
-        }
+            if (!id) {
+                res.send(400)
+            }
 
-        const isDeleted = PostsRepositories.deletePost(id)
+            const isDeleted = PostsRepositories.deletePost(id)
 
-        if (!isDeleted) {
-            res.send(404)
-        }
+            if (!isDeleted) {
+                res.send(404)
+            }
 
-        res.send(204)
-    })
+            res.send(204)
+        })

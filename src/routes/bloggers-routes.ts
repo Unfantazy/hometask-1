@@ -15,6 +15,7 @@ bloggersRouter
 //Добавление нового блоггера
     .post('/',
 
+        authMiddleware,
         body('name').trim().isLength({ min: 1, max: 15 }),
         body('youtubeUrl').trim().isLength({ min: 1, max: 100 }).matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+$/),
         inputValidatorMiddleware,
@@ -65,21 +66,24 @@ bloggersRouter
             res.send(204)
         })
 //Удаление блоггера
-    .delete('/:bloggerId', (req: Request, res: Response) => {
-        const id = +req.params.bloggerId
+    .delete('/:bloggerId',
+        authMiddleware,
 
-        const isDeleted = bloggersRepositories.deleteVideo(id)
+        (req: Request, res: Response) => {
+            const id = +req.params.bloggerId
 
-        if (!id) {
-            res.send(400)
-            return
-        }
+            const isDeleted = bloggersRepositories.deleteVideo(id)
 
-        if (!isDeleted) {
-            res.send(404)
-            return
-        }
+            if (!id) {
+                res.send(400)
+                return
+            }
 
-        res.send(204)
+            if (!isDeleted) {
+                res.send(404)
+                return
+            }
 
-    })
+            res.send(204)
+
+        })
