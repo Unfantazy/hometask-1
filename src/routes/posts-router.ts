@@ -88,6 +88,7 @@ postsRouter
         })
 //Удаление блоггера
     .delete('/:postId',
+        authMiddleware,
         (req: Request, res: Response) => {
             const id = +req.params.postId
 

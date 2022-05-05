@@ -66,6 +66,7 @@ bloggersRouter
         })
 //Удаление блоггера
     .delete('/:bloggerId',
+        authMiddleware,
         (req: Request, res: Response) => {
             const id = +req.params.bloggerId
 
