@@ -3,6 +3,7 @@ import { PostsRepositories } from '../repositories/posts-repositories'
 import { inputValidatorMiddleware } from '../middlewares/input-validator-middleware'
 import { body } from 'express-validator'
 import { bloggersRepositories } from '../repositories/bloggers-repositories'
+import { authMiddleware } from '../middlewares/auth-middleware'
 
 export const postsRouter = Router({})
 
@@ -51,6 +52,7 @@ postsRouter
 //Изменить информацию в посте
     .put('/:postId',
 
+        authMiddleware,
         body('title').trim().isLength({ min: 1, max: 30 }),
         body('shortDescription').trim().isLength({ min: 1, max: 100 }),
         body('content').trim().isLength({ min: 1, max: 1000 }),
