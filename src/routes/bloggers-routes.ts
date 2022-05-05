@@ -15,7 +15,6 @@ bloggersRouter
 //Добавление нового блоггера
     .post('/',
 
-        authMiddleware,
         body('name').trim().isLength({ min: 1, max: 15 }),
         body('youtubeUrl').trim().isLength({ min: 1, max: 100 }).matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+$/),
         inputValidatorMiddleware,
@@ -67,8 +66,6 @@ bloggersRouter
         })
 //Удаление блоггера
     .delete('/:bloggerId',
-        authMiddleware,
-
         (req: Request, res: Response) => {
             const id = +req.params.bloggerId
 
