@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express'
 import { PostsRepositories } from '../repositories/posts-repositories'
 import { inputValidatorMiddleware } from '../middlewares/input-validator-middleware'
 import { body } from 'express-validator'
+import { bloggersRepositories } from '../repositories/bloggers-repositories'
 
 export const postsRouter = Router({})
 
@@ -49,6 +50,7 @@ postsRouter
     })
 //Изменить информацию в посте
     .put('/:postId',
+
         body('title').trim().isLength({ min: 1, max: 30 }),
         body('shortDescription').trim().isLength({ min: 1, max: 100 }),
         body('content').trim().isLength({ min: 1, max: 1000 }),
@@ -58,6 +60,12 @@ postsRouter
         (req: Request, res: Response) => {
             const id = +req.params.postId
             const { title, shortDescription, content, bloggerId } = req.body
+
+            const blogger = bloggersRepositories.getBloggerById(bloggerId)
+
+            if (!blogger) {
+                res.send(404)
+            }
 
             const isUpdated = PostsRepositories.updatePost({
                 id,
