@@ -14,7 +14,8 @@ bloggersRouter
 //Добавление нового блоггера
     .post('/',
 
-        body('youtubeUrl').isLength({ min: 1, max: 100 }).withMessage('The YoutubeUrl field is required.'),
+        body('youtubeUrl').isLength({ min: 1, max: 100 }).withMessage('The YoutubeUrl field is required.')
+            .matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+$/),
         body('name').isLength({ min: 1, max: 15 }).withMessage('The Name field is required'),
         inputValidatorMiddleware,
 
@@ -46,7 +47,8 @@ bloggersRouter
 //Изменить информацию о блоггере
     .put('/:bloggerId',
 
-        body('youtubeUrl').isLength({ min: 1, max: 100 }).withMessage('The YoutubeUrl field is required.'),
+        body('youtubeUrl').isLength({ min: 1, max: 100 }).withMessage('The YoutubeUrl field is required.')
+            .matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+$/),
         body('name').isLength({ min: 1, max: 15 }).withMessage('The Name field is required'),
         inputValidatorMiddleware,
 
