@@ -29,10 +29,7 @@ postsRouter
             })
         
             if (!newPost) {
-                res.status(400).send({
-                    message: 'no blogger',
-                    field: 'bloggerId'
-                })
+                res.status(400).send({ errorsMessages: [{ message: 'no blogger', field: 'bloggerId' }], resultCode: 1 })
             }
 
             res.status(201).send(newPost)
@@ -71,7 +68,7 @@ postsRouter
             })
 
             if (!isUpdated) {
-                res.status(404).send({ message: 'no blogger', field: 'bloggerId' })
+                res.status(400).send({ errorsMessages: [{ message: 'no blogger', field: 'bloggerId' }], resultCode: 1 })
                 return
             }
 
