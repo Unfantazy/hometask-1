@@ -14,6 +14,7 @@ postsRouter
     })
 //Добавление нового поста
     .post('/',
+        authMiddleware,
         body('title').trim().isLength({ min: 1, max: 30 }),
         body('shortDescription').trim().isLength({ min: 1, max: 100 }),
         body('content').trim().isLength({ min: 1, max: 1000 }),
