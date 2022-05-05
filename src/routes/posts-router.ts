@@ -12,9 +12,9 @@ postsRouter
     })
 //Добавление нового поста
     .post('/',
-        body('title').isLength({ min: 1, max: 30 }).withMessage('The title field is required'),
-        body('shortDescription').isLength({ min: 1, max: 100 }).withMessage('The shortDescription field is required'),
-        body('content').isLength({ min: 1, max: 1000 }).withMessage('The content field is required'),
+        body('title').trim().isLength({ min: 1, max: 30 }).withMessage('The title field is required'),
+        body('shortDescription').trim().isLength({ min: 1, max: 100 }).withMessage('The shortDescription field is required'),
+        body('content').trim().isLength({ min: 1, max: 1000 }).withMessage('The content field is required'),
         body('bloggerId').isLength({ min: 1 }).withMessage('The bloggerId is required').isNumeric(),
         inputValidatorMiddleware,
 
@@ -55,9 +55,9 @@ postsRouter
     })
 //Изменить информацию в посте
     .put('/:postId',
-        body('title').isLength({ min: 1, max: 30 }).withMessage('The title field is required'),
-        body('shortDescription').isLength({ min: 1, max: 100 }).withMessage('The shortDescription field is required'),
-        body('content').isLength({ min: 1, max: 1000 }).withMessage('The content field is required'),
+        body('title').trim().isLength({ min: 1, max: 30 }).withMessage('The title field is required'),
+        body('shortDescription').trim().isLength({ min: 1, max: 100 }).withMessage('The shortDescription field is required'),
+        body('content').trim().isLength({ min: 1, max: 1000 }).withMessage('The content field is required'),
         body('bloggerId').isLength({ min: 1 }).withMessage('The bloggerId is required').isNumeric(),
         inputValidatorMiddleware,
         
