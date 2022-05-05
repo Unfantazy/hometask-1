@@ -21,7 +21,13 @@ export const PostsRepositories = {
         return false
     },
     updatePost(model: PostType) {
-        const { title, id, content, shortDescription } = model
+        const { title, id, content, shortDescription, bloggerId } = model
+
+        const blogger = bloggersRepositories.getBloggerById(bloggerId)
+
+        if (!blogger) {
+            return false
+        }
 
         const post = posts.find(post => post.id === id)
         if (!post) return false

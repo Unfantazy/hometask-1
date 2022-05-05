@@ -12,19 +12,14 @@ postsRouter
     })
 //Добавление нового поста
     .post('/',
-        body('title').trim().isLength({ min: 1, max: 30 }).withMessage('The title field is required'),
-        body('shortDescription').trim().isLength({ min: 1, max: 100 }).withMessage('The shortDescription field is required'),
-        body('content').trim().isLength({ min: 1, max: 1000 }).withMessage('The content field is required'),
-        body('bloggerId').isLength({ min: 1 }).withMessage('The bloggerId is required').isNumeric(),
+        body('title').trim().isLength({ min: 1, max: 30 }),
+        body('shortDescription').trim().isLength({ min: 1, max: 100 }),
+        body('content').trim().isLength({ min: 1, max: 1000 }),
+        body('bloggerId').isLength({ min: 1 }).isNumeric(),
         inputValidatorMiddleware,
 
         (req: Request, res: Response) => {
             const { title, shortDescription, content, bloggerId } = req.body
-
-            if (!bloggerId) {
-                res.send(400)
-                return
-            }
 
             const newPost = PostsRepositories.createPost({
                 title,
@@ -34,8 +29,10 @@ postsRouter
             })
         
             if (!newPost) {
-                res.send(400)
-                return
+                res.status(400).send({
+                    message: 'no blogger',
+                    field: 'bloggerId'
+                })
             }
 
             res.status(201).send(newPost)
@@ -55,10 +52,10 @@ postsRouter
     })
 //Изменить информацию в посте
     .put('/:postId',
-        body('title').trim().isLength({ min: 1, max: 30 }).withMessage('The title field is required'),
-        body('shortDescription').trim().isLength({ min: 1, max: 100 }).withMessage('The shortDescription field is required'),
-        body('content').trim().isLength({ min: 1, max: 1000 }).withMessage('The content field is required'),
-        body('bloggerId').isLength({ min: 1 }).withMessage('The bloggerId is required').isNumeric(),
+        body('title').trim().isLength({ min: 1, max: 30 }),
+        body('shortDescription').trim().isLength({ min: 1, max: 100 }),
+        body('content').trim().isLength({ min: 1, max: 1000 }),
+        body('bloggerId').isLength({ min: 1 }).isNumeric(),
         inputValidatorMiddleware,
         
         (req: Request, res: Response) => {
@@ -74,7 +71,7 @@ postsRouter
             })
 
             if (!isUpdated) {
-                res.send(404)
+                res.status(404).send({ message: 'no blogger', field: 'bloggerId' })
                 return
             }
 
