@@ -63,11 +63,12 @@ postsRouter
 
             const blogger = bloggersRepositories.getBloggerById(bloggerId)
 
-            if (!blogger) {
+            if (!blogger || !bloggerId) {
                 res.status(400).send({ errorsMessages: [{ message: 'no blogger', field: 'bloggerId' }], resultCode: 1 })
+                return
             }
 
-            const isUpdated = PostsRepositories.updatePost({
+            const updatedPost = PostsRepositories.updatePost({
                 id,
                 title,
                 shortDescription,
@@ -75,8 +76,8 @@ postsRouter
                 bloggerId
             })
 
-            if (!isUpdated) {
-                res.status(400).send({ errorsMessages: [{ message: 'no blogger', field: 'bloggerId' }], resultCode: 1 })
+            if (!updatedPost) {
+                res.send(404)
                 return
             }
 

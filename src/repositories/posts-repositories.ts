@@ -24,13 +24,13 @@ export const PostsRepositories = {
         const { title, id, content, shortDescription } = model
 
         const post = posts.find(post => post.id === id)
-        if (!post) return false
+        if (!post) return null
 
         post.title = title
         post.shortDescription = shortDescription
         post.content = content
 
-        return true
+        return post
     },
     createPost(model: PostType) {
         const { title, content, shortDescription, bloggerId } = model
