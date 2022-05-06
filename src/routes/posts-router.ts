@@ -1,16 +1,17 @@
 import { Request, Response, Router } from 'express'
-import { PostsRepositories } from '../repositories/posts-repositories'
 import { inputValidatorMiddleware } from '../middlewares/input-validator-middleware'
 import { body } from 'express-validator'
-import { bloggersRepositories } from '../repositories/bloggers-repositories'
+
 import { authMiddleware } from '../middlewares/auth-middleware'
+import { PostsServices } from '../services/posts-services'
+import { bloggersServices } from '../services/bloggers-services'
 
 export const postsRouter = Router({})
 
 postsRouter
 //Получение всех постов
     .get('/', async (req: Request, res: Response) => {
-        res.send(await PostsRepositories.getPosts())
+        res.send(await PostsServices.getPosts())
     })
 //Добавление нового поста
     .post('/',
@@ -24,7 +25,7 @@ postsRouter
         async (req: Request, res: Response) => {
             const { title, shortDescription, content, bloggerId } = req.body
 
-            const newPost = await PostsRepositories.createPost({
+            const newPost = await PostsServices.createPost({
                 title,
                 shortDescription,
                 content,
@@ -41,7 +42,7 @@ postsRouter
     .get('/:postId', async (req: Request, res: Response) => {
         const id = +req.params.postId
 
-        const post = await PostsRepositories.getPostById(id)
+        const post = await PostsServices.getPostById(id)
 
         if (!post) {
             res.send(404)
@@ -64,14 +65,14 @@ postsRouter
             const id = +req.params.postId
             const { title, shortDescription, content, bloggerId } = req.body
 
-            const blogger = await bloggersRepositories.getBloggerById(bloggerId)
+            const blogger = await bloggersServices.getBloggerById(bloggerId)
 
             if (!blogger || !bloggerId) {
                 res.status(400).send({ errorsMessages: [{ message: 'no blogger', field: 'bloggerId' }], resultCode: 1 })
                 return
             }
 
-            const updatedPost = await PostsRepositories.updatePost({
+            const updatedPost = await PostsServices.updatePost({
                 id,
                 title,
                 shortDescription,
@@ -96,7 +97,7 @@ postsRouter
                 res.send(400)
             }
 
-            const isDeleted = await PostsRepositories.deletePost(id)
+            const isDeleted = await PostsServices.deletePost(id)
 
             if (!isDeleted) {
                 res.send(404)

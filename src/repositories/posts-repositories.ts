@@ -1,6 +1,4 @@
 import { postsCollection } from './db'
-import { bloggersRepositories } from './bloggers-repositories'
-
 
 export const PostsRepositories = {
     async getPosts() {
@@ -17,25 +15,8 @@ export const PostsRepositories = {
         const { title, id, content, shortDescription } = model
         return await postsCollection.updateOne({ id }, { $set: { title, content, shortDescription } })
     },
-    async createPost(model: PostType) {
-        const { title, content, shortDescription, bloggerId } = model
-        
-        const blogger = await bloggersRepositories.getBloggerById(bloggerId)
-
-        if (!blogger) {
-            return null
-        }
-
-        const newPost: PostType = {
-            id: +(new Date()),
-            bloggerId,
-            content,
-            shortDescription,
-            title,
-            bloggerName: blogger.name
-        }
+    async createPost(newPost: PostType) {
         await postsCollection.insertOne(newPost)
         return newPost
-
     }
 }

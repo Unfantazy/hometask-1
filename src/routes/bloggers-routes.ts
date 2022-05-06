@@ -1,8 +1,8 @@
 import { Request, Response, Router } from 'express'
-import { bloggersRepositories } from '../repositories/bloggers-repositories'
 import { body } from 'express-validator'
 import { inputValidatorMiddleware } from '../middlewares/input-validator-middleware'
 import { authMiddleware } from '../middlewares/auth-middleware'
+import { bloggersServices } from '../services/bloggers-services'
 
 export const bloggersRouter = Router({})
 
@@ -10,7 +10,7 @@ export const bloggersRouter = Router({})
 bloggersRouter
 //Получение всех блоггеров
     .get('/', async (req: Request, res: Response) => {
-        res.send(await bloggersRepositories.getBloggers())
+        res.send(await bloggersServices.getBloggers())
     })
 //Добавление нового блоггера
     .post('/',
@@ -22,7 +22,7 @@ bloggersRouter
         async (req: Request, res: Response) => {
             const { name, youtubeUrl } = req.body
 
-            const blogger = await bloggersRepositories.createBlogger(name, youtubeUrl)
+            const blogger = await bloggersServices.createBlogger(name, youtubeUrl)
 
             res.status(201).send(blogger)
         })
@@ -30,7 +30,7 @@ bloggersRouter
     .get('/:bloggerId', async (req: Request, res: Response) => {
         const id = +req.params.bloggerId
 
-        const blogger = await bloggersRepositories.getBloggerById(id)
+        const blogger = await bloggersServices.getBloggerById(id)
 
         if (!id) {
             res.send(400)
@@ -55,7 +55,7 @@ bloggersRouter
         async (req: Request, res: Response) => {
             const id = +req.params.bloggerId
             const { name, youtubeUrl } = req.body
-            const isUpdated = await bloggersRepositories.updateBlogger(id, name, youtubeUrl)
+            const isUpdated = await bloggersServices.updateBlogger(id, name, youtubeUrl)
 
             if (!isUpdated) {
                 res.send(404)
@@ -70,7 +70,7 @@ bloggersRouter
         async (req: Request, res: Response) => {
             const id = +req.params.bloggerId
 
-            const isDeleted = await bloggersRepositories.deleteBlogger(id)
+            const isDeleted = await bloggersServices.deleteBlogger(id)
 
             if (!id) {
                 res.send(400)

@@ -15,12 +15,7 @@ export const bloggersRepositories = {
         const result = await bloggersCollection.updateOne({ id }, { $set: { name, youtubeUrl } })
         return !!result.matchedCount
     },
-    async createBlogger(name: string, youtubeUrl: string) {
-        const newBlogger: BloggerType = {
-            id: +(new Date()),
-            name,
-            youtubeUrl
-        }
+    async createBlogger(newBlogger: BloggerType) {
         await bloggersCollection.insertOne(newBlogger)
         return newBlogger
     }
