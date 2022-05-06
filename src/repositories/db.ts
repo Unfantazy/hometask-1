@@ -1,12 +1,26 @@
-export const bloggers: BloggerType[] = [
-    { id: 1, youtubeUrl: 'IT-KAMASUTRA.com', name: 'Dimych' },
-    { id: 2, youtubeUrl: 'Incubator.ru', name: 'Incubator' },
-    { id: 3, youtubeUrl: 'Omagad.ru', name: 'Omagad' },
-    { id: 4, youtubeUrl: 'BeautyBlogger.ru', name: 'BeautyBlogger' },
-]
+import { MongoClient } from 'mongodb'
 
-export const posts: PostType[] = [
-    { id: 1, bloggerId: 1, bloggerName: 'Blogger1', content: 'Content1', shortDescription: 'shortDescription1', title: 'Info1' },
-    { id: 2, bloggerId: 2, bloggerName: 'Blogger2', content: 'Content2', shortDescription: 'shortDescription2', title: 'Info2' },
-    { id: 3, bloggerId: 2, bloggerName: 'Blogger3', content: 'Content3', shortDescription: 'shortDescription3', title: 'Info3' },
-]
+const mongoUri = process.env.mongoURI || 'mongodb://0.0.0.0:27017/?maxPoolSize=20&w=majority'
+
+const client = new MongoClient(mongoUri)
+
+const db = client.db('bloggers')
+export const bloggersCollection = db.collection<BloggerType>('bloggers')
+export const postsCollection = db.collection<PostType>('posts')
+
+export async function runDb() {
+    try {
+        // Connect the client to the server
+        await client.connect()
+        // Establish and verify connection
+        await db.command({ ping: 1 })
+        // eslint-disable-next-line no-console
+        console.log('Connected successfully to mongo server')
+
+    } catch(e) {
+        // eslint-disable-next-line no-console
+        console.log(e)
+        // Ensures that the client will close when you finish/error
+        await client.close()
+    }
+}

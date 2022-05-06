@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
+
+import { runDb } from './repositories/db'
 import { bloggersRouter } from './routes/bloggers-routes'
 import { postsRouter } from './routes/posts-router'
 
@@ -17,7 +19,12 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/bloggers', bloggersRouter)
 app.use('/posts', postsRouter)
 
-app.listen(PORT, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Example app listening on port ${PORT}`)
-})
+const startApp = async () => {
+    await runDb()
+    app.listen(PORT, () => {
+        // eslint-disable-next-line no-console
+        console.log(`Example app listening on port: ${PORT}`)
+    })
+}
+
+startApp()

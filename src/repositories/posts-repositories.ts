@@ -1,41 +1,26 @@
-import { posts } from './db'
+import { postsCollection } from './db'
 import { bloggersRepositories } from './bloggers-repositories'
 
 
 export const PostsRepositories = {
-    getPosts() {
-        return posts
+    async getPosts() {
+        return postsCollection.find({}).toArray()
     },
-    getPostById(id: number) {
-        return posts.find(post => post.id === id) ?? null
+    async getPostById(id: number) {
+        return await postsCollection.findOne({ id }) || null
     },
-    deletePost(id: number) {
-        const newPosts = posts.filter(post => post.id !== id)
-
-        if (newPosts.length < posts.length) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            posts = newPosts
-            return true
-        }
-        return false
+    async deletePost(id: number) {
+        const result = await postsCollection.deleteOne({ id })
+        return !!result.deletedCount
     },
-    updatePost(model: PostType) {
+    async updatePost(model: PostType) {
         const { title, id, content, shortDescription } = model
-
-        const post = posts.find(post => post.id === id)
-        if (!post) return null
-
-        post.title = title
-        post.shortDescription = shortDescription
-        post.content = content
-
-        return post
+        return await postsCollection.updateOne({ id }, { $set: { title, content, shortDescription } })
     },
-    createPost(model: PostType) {
+    async createPost(model: PostType) {
         const { title, content, shortDescription, bloggerId } = model
         
-        const blogger = bloggersRepositories.getBloggerById(bloggerId)
+        const blogger = await bloggersRepositories.getBloggerById(bloggerId)
 
         if (!blogger) {
             return null
@@ -49,7 +34,7 @@ export const PostsRepositories = {
             title,
             bloggerName: blogger.name
         }
-        posts.push(newPost)
+        await postsCollection.insertOne(newPost)
         return newPost
 
     }

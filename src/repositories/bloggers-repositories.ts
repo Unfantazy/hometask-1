@@ -1,39 +1,27 @@
-import { bloggers } from './db'
+import { bloggersCollection } from './db'
 
 export const bloggersRepositories = {
-    getBloggers() {
-        return bloggers
+    async getBloggers() {
+        return bloggersCollection.find({}).toArray()
     },
-    getBloggerById(id: number) {
-        return bloggers.find(blogger => blogger.id === id) ?? null
+    async getBloggerById(id: number) {
+        return await bloggersCollection.findOne({ id }) || null
     },
-    deleteVideo(id: number) {
-        const newBloggers = bloggers.filter(blogger => blogger.id !== id)
-        if (newBloggers.length < bloggers.length) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            bloggers = newBloggers
-            return true
-        }
-        return false
+    async deleteBlogger(id: number) {
+        const result = await bloggersCollection.deleteOne({ id })
+        return !!result.deletedCount
     },
-    updateVideo(id: number, name: string, youtubeUrl: string) {
-        const blogger = bloggers.find(blogger => blogger.id === id)
-        if (!blogger) return false
-
-        blogger.name = name
-        blogger.youtubeUrl = youtubeUrl
-
-        return true
+    async updateBlogger(id: number, name: string, youtubeUrl: string) {
+        const result = await bloggersCollection.updateOne({ id }, { $set: { name, youtubeUrl } })
+        return !!result.matchedCount
     },
-    createBlogger(name: string, youtubeUrl: string) {
+    async createBlogger(name: string, youtubeUrl: string) {
         const newBlogger: BloggerType = {
             id: +(new Date()),
             name,
             youtubeUrl
         }
-
-        bloggers.push(newBlogger)
+        await bloggersCollection.insertOne(newBlogger)
         return newBlogger
     }
 }

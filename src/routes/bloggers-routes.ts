@@ -9,8 +9,8 @@ export const bloggersRouter = Router({})
 
 bloggersRouter
 //Получение всех блоггеров
-    .get('/', (req: Request, res: Response) => {
-        res.send(bloggersRepositories.getBloggers())
+    .get('/', async (req: Request, res: Response) => {
+        res.send(await bloggersRepositories.getBloggers())
     })
 //Добавление нового блоггера
     .post('/',
@@ -19,18 +19,18 @@ bloggersRouter
         body('youtubeUrl').trim().isLength({ min: 1, max: 100 }).matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+$/),
         inputValidatorMiddleware,
 
-        (req: Request, res: Response) => {
+        async (req: Request, res: Response) => {
             const { name, youtubeUrl } = req.body
 
-            const blogger = bloggersRepositories.createBlogger(name, youtubeUrl)
+            const blogger = await bloggersRepositories.createBlogger(name, youtubeUrl)
 
             res.status(201).send(blogger)
         })
 //Найти блоггера по ID
-    .get('/:bloggerId', (req: Request, res: Response) => {
+    .get('/:bloggerId', async (req: Request, res: Response) => {
         const id = +req.params.bloggerId
 
-        const blogger = bloggersRepositories.getBloggerById(id)
+        const blogger = await bloggersRepositories.getBloggerById(id)
 
         if (!id) {
             res.send(400)
@@ -52,10 +52,10 @@ bloggersRouter
         body('youtubeUrl').trim().isLength({ min: 1, max: 100 }).matches(/^https:\/\/([a-zA-Z0-9_-]+\.)+[a-zA-Z0-9_-]+$/),
         inputValidatorMiddleware,
 
-        (req: Request, res: Response) => {
+        async (req: Request, res: Response) => {
             const id = +req.params.bloggerId
             const { name, youtubeUrl } = req.body
-            const isUpdated = bloggersRepositories.updateVideo(id, name, youtubeUrl)
+            const isUpdated = await bloggersRepositories.updateBlogger(id, name, youtubeUrl)
 
             if (!isUpdated) {
                 res.send(404)
@@ -67,10 +67,10 @@ bloggersRouter
 //Удаление блоггера
     .delete('/:bloggerId',
         authMiddleware,
-        (req: Request, res: Response) => {
+        async (req: Request, res: Response) => {
             const id = +req.params.bloggerId
 
-            const isDeleted = bloggersRepositories.deleteVideo(id)
+            const isDeleted = await bloggersRepositories.deleteBlogger(id)
 
             if (!id) {
                 res.send(400)

@@ -9,8 +9,8 @@ export const postsRouter = Router({})
 
 postsRouter
 //Получение всех постов
-    .get('/', (req: Request, res: Response) => {
-        res.send(PostsRepositories.getPosts())
+    .get('/', async (req: Request, res: Response) => {
+        res.send(await PostsRepositories.getPosts())
     })
 //Добавление нового поста
     .post('/',
@@ -21,10 +21,10 @@ postsRouter
         body('bloggerId').isLength({ min: 1 }).isNumeric(),
         inputValidatorMiddleware,
 
-        (req: Request, res: Response) => {
+        async (req: Request, res: Response) => {
             const { title, shortDescription, content, bloggerId } = req.body
 
-            const newPost = PostsRepositories.createPost({
+            const newPost = await PostsRepositories.createPost({
                 title,
                 shortDescription,
                 content,
@@ -38,10 +38,10 @@ postsRouter
             res.status(201).send(newPost)
         })
 //Найти пост по ID
-    .get('/:postId', (req: Request, res: Response) => {
+    .get('/:postId', async (req: Request, res: Response) => {
         const id = +req.params.postId
 
-        const post = PostsRepositories.getPostById(id)
+        const post = await PostsRepositories.getPostById(id)
 
         if (!post) {
             res.send(404)
@@ -60,18 +60,18 @@ postsRouter
         body('bloggerId').isLength({ min: 1 }).isNumeric(),
         inputValidatorMiddleware,
         
-        (req: Request, res: Response) => {
+        async (req: Request, res: Response) => {
             const id = +req.params.postId
             const { title, shortDescription, content, bloggerId } = req.body
 
-            const blogger = bloggersRepositories.getBloggerById(bloggerId)
+            const blogger = await bloggersRepositories.getBloggerById(bloggerId)
 
             if (!blogger || !bloggerId) {
                 res.status(400).send({ errorsMessages: [{ message: 'no blogger', field: 'bloggerId' }], resultCode: 1 })
                 return
             }
 
-            const updatedPost = PostsRepositories.updatePost({
+            const updatedPost = await PostsRepositories.updatePost({
                 id,
                 title,
                 shortDescription,
@@ -89,14 +89,14 @@ postsRouter
 //Удаление блоггера
     .delete('/:postId',
         authMiddleware,
-        (req: Request, res: Response) => {
+        async (req: Request, res: Response) => {
             const id = +req.params.postId
 
             if (!id) {
                 res.send(400)
             }
 
-            const isDeleted = PostsRepositories.deletePost(id)
+            const isDeleted = await PostsRepositories.deletePost(id)
 
             if (!isDeleted) {
                 res.send(404)
